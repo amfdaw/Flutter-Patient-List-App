@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+
 
 void main() {
   runApp(MyApp());
@@ -84,10 +86,39 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   List<Patient> patientList = [];
+  List<Patient> filteredPatients = []; // Define filteredPatients here
   TextEditingController nameController = TextEditingController();
   TextEditingController dateController = TextEditingController();
   Gender? selectedGender;
-  int selectedPatientIndex = -1; // To track the selected patient for editing
+  int selectedPatientIndex = -1;
+  String searchQuery = '';
+  Widget emptyListMessage = Text("The patient list is empty");
+
+  @override
+  void initState() {
+    // Initialize your patientList here
+    super.initState();
+    patientList = [
+      Patient(name: 'John Doe', dateOfBirth: DateTime(1980, 5, 15), gender: Gender.male),
+      Patient(name: 'Jane Smith', dateOfBirth: DateTime(1992, 8, 23), gender: Gender.female),
+      Patient(name: 'Pepe Ramirez', dateOfBirth: DateTime(1986, 3, 11), gender: Gender.male),
+    ];
+    filteredPatients = patientList;
+  }
+
+  void filterPatients() {
+    if (searchQuery.isEmpty) {
+      filteredPatients = patientList.toList(); // No search query, show all patients
+    } else {
+      setState(() {
+        filteredPatients = patientList.where((patient) {
+          final name = patient.name.toLowerCase();
+          return name.contains(searchQuery.toLowerCase());
+        }).toList();
+      });
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -132,66 +163,81 @@ class _MainPageState extends State<MainPage> {
               ),
             ),
           ),
-          SizedBox(height: 20),
-          Row(
-            children: [
-              Expanded(
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20), // Adjust the border radius as needed
-                    border: Border.all(color: Colors.blueGrey, width: 1.6), // Border styling
-                  ),
-                  child: TextField(
-                    decoration: InputDecoration(
-                      labelText: 'Search Patients',
-                      contentPadding: EdgeInsets.symmetric(horizontal: 20), // Adjust the padding as needed
-                      border: InputBorder.none, // Remove the default border
-
+          SizedBox(height: 22),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10.0), // Adjust the horizontal padding as needed
+            child: Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: Colors.blueGrey, width: 1.6),
                     ),
-                    onChanged: (query) {
-                      // Implement your search functionality here
-                      // You can filter the patientList based on the search query
-                      // and update the displayed list accordingly
-                    },
+                    child: TextField(
+                      decoration: InputDecoration(
+                        labelText: 'Search Patients',
+                        contentPadding: EdgeInsets.symmetric(horizontal: 20),
+                        border: InputBorder.none,
+                      ),
+                      onChanged: (query) {
+                        setState(() {
+                          searchQuery = query;
+                          filterPatients();
+                        });
+                      },
+                    ),
                   ),
                 ),
-              ),
-              Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.blueGrey,
+                SizedBox(
+                  width: 60.0, // Adjust the width to make the search icon smaller
+                  height: 50.0, // Adjust the height to make the search icon smaller
+                  child: Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.blueGrey,
+                    ),
+                    child: IconButton(
+                      icon: Icon(Icons.search, color: Colors.white),
+                      onPressed: () {
+                        // Clear the search query
+                        // You can update the displayed list accordingly
+                      },
+                    ),
+                  ),
                 ),
-                child: IconButton(
-                  icon: Icon(Icons.search, color: Colors.white),
-                  onPressed: () {
-                    // Clear the search query
-                    // You can update the displayed list accordingly
-                  },
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
+
           Expanded(
-            child: ListView.builder(
-              itemCount: patientList.length,
+            child: filteredPatients.isEmpty
+                ? Center(
+              child: searchQuery.isNotEmpty
+                  ? Text("There are no patients with that name")
+                  : emptyListMessage,
+            ): ListView.builder(
+              itemCount: filteredPatients.length, // Use the filteredPatients list
               itemBuilder: (context, index) {
-                final patient = patientList[index];
+                final patient = filteredPatients[index]; // Get the patient from the filtered list
                 return ListTile(
                   title: Text(patient.name),
-                  subtitle: Text('${patient.dateOfBirth.toString().split(' ')[0]}, ${patient.gender == Gender.male ? 'Male' : 'Female'}'),
+                  subtitle: Text(
+                    '${patient.dateOfBirth.toString().split(' ')[0]}, ${patient.gender == Gender.male ? 'Male' : 'Female'}',
+                  ),
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       IconButton(
                         icon: Icon(Icons.edit),
                         onPressed: () {
-                          _showEditPatientDialog(context, index);
+                          _showEditPatientDialog(context, patientList.indexOf(patient));
                         },
                       ),
                       IconButton(
                         icon: Icon(Icons.delete),
                         onPressed: () {
-                          _deletePatient(index);
+                          _deletePatient(patientList.indexOf(patient));
                         },
                       ),
                     ],
@@ -200,6 +246,7 @@ class _MainPageState extends State<MainPage> {
               },
             ),
           ),
+
         ],
       ),
       floatingActionButton: FloatingActionButton(
