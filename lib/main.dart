@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 
+
 void main() {
   runApp(MyApp());
 }
 
-class Patient {
+class Patient {//Clase Paciente con sus atributos
   String name;
   DateTime dateOfBirth;
   Gender gender;
@@ -31,7 +32,7 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
+//Página de inicio
 class StartPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -39,7 +40,7 @@ class StartPage extends StatelessWidget {
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: NetworkImage('https://www.mouser.mx/blog/Portals/11/Analog_Exoskeletons%20Mobility%20Solutions%20Theme%20Image.jpg'),
+            image: NetworkImage('https://media.istockphoto.com/id/1352429166/es/vector/los-iconos-de-exoesqueleto-establecen-el-vector-de-contorno-cuerpo-cibern%C3%A9tico-artificial.jpg?s=612x612&w=0&k=20&c=Gup7W5SVm2e8618f2Daxo9-7POK7RjZVCmMEOFb1cSc='),
             fit: BoxFit.cover,
           ),
         ),
@@ -50,21 +51,25 @@ class StartPage extends StatelessWidget {
               Text(
                 'Welcome',
                 style: TextStyle(
+                  fontFamily: 'Nunito',
                   fontSize: 40,
-                  color: Colors.white,
+                  color: Colors.lightBlueAccent[100],
+                  backgroundColor: Colors.white,
+                  fontWeight: FontWeight.bold,
+
                 ),
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 45),
               ElevatedButton(
                 onPressed: () {
                   Navigator.pushNamed(context, '/main');
                 },
                 child: Text(
                   'Start',
-                  style: TextStyle(fontSize: 18, color: Colors.blue),
+                  style: TextStyle(fontFamily: 'Nunito',fontSize: 25, color: Colors.lightBlue, fontWeight: FontWeight.bold,letterSpacing:6,)
                 ),
                 style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+                  padding: EdgeInsets.symmetric(horizontal: 40, vertical: 20),
                   primary: Colors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
@@ -78,7 +83,7 @@ class StartPage extends StatelessWidget {
     );
   }
 }
-
+//Página de inicio
 class MainPage extends StatefulWidget {
   @override
   _MainPageState createState() => _MainPageState();
@@ -96,7 +101,7 @@ class _MainPageState extends State<MainPage> {
 
   @override
   void initState() {
-    // Initialize your patientList here
+    // Inicializar la lista de pacientes con 3 mocks
     super.initState();
     patientList = [
       Patient(name: 'John Doe', dateOfBirth: DateTime(1980, 5, 15), gender: Gender.male),
@@ -107,8 +112,9 @@ class _MainPageState extends State<MainPage> {
   }
 
   void filterPatients() {
+    //Método para filtrar la lista de pacientes, pudiendo así realizar búsquedas en ella
     if (searchQuery.isEmpty) {
-      filteredPatients = patientList.toList(); // No search query, show all patients
+      filteredPatients = patientList.toList();
     } else {
       setState(() {
         filteredPatients = patientList.where((patient) {
@@ -122,16 +128,19 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
+    //Scaffold define el layout de la página principal, es decir, la barra superior y el cuerpo de la página)
     return Scaffold(
       appBar: AppBar(
         title: Text(
           'Hi, Welcome!',
           style: TextStyle(
-            color: Colors.blueGrey,
+            color: Colors.white,fontFamily: 'Nunito',
+              letterSpacing: 3.5,
+            fontWeight: FontWeight.bold,
           ),
         ),
         centerTitle: true,
-        backgroundColor: Colors.grey[300],
+        backgroundColor: Colors.black38,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
             bottomLeft: Radius.circular(20),
@@ -142,37 +151,42 @@ class _MainPageState extends State<MainPage> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          SizedBox(height: 20), // Adjust the height for desired separation
+          SizedBox(height: 30), // Define la separación vertical entre la barra superior y el título
           Text(
             'Patient List',
             style: TextStyle(
+              fontFamily: 'Nunito',
               fontSize: 35,
-              color: Colors.black,
+              color: Colors.black54,
+              letterSpacing: 1.5,
             ),
           ),
-          SizedBox(height: 20), // Vertical separation from the "Patient List" text
+          SizedBox(height: 15),
           Center(
-            child: Padding( // Add left margin separation
-              padding: EdgeInsets.symmetric(horizontal: 25.0), // Adjust the margin as needed
+            child: Padding( // Margen de separación entre el texto explicativo y los bordes de la pantalla
+              padding: EdgeInsets.symmetric(horizontal: 25.0),
               child: Text(
                 'Below, you can find the complete list of all registered patients. Select one to view more details or perform specific actions.',
                 style: TextStyle(
-                  fontSize: 12, // 1/3 of the font size of "Patient List"
-                  color: Colors.grey[400], // Light grey color
+                  fontSize: 12,
+                  color: Colors.grey[400],
+                  letterSpacing: 2.5,
                 ),
               ),
             ),
           ),
-          SizedBox(height: 22),
+
+          // Barra de búsqueda de pacientes
+          SizedBox(height: 15),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10.0), // Adjust the horizontal padding as needed
+            padding: const EdgeInsets.symmetric(horizontal: 12.5),
             child: Row(
               children: [
                 Expanded(
                   child: Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: Colors.blueGrey, width: 1.6),
+                      border: Border.all(color: Colors.black38, width: 1.6),
                     ),
                     child: TextField(
                       decoration: InputDecoration(
@@ -190,18 +204,17 @@ class _MainPageState extends State<MainPage> {
                   ),
                 ),
                 SizedBox(
-                  width: 60.0, // Adjust the width to make the search icon smaller
-                  height: 50.0, // Adjust the height to make the search icon smaller
+                  width: 50.0,
+                  height: 90.0,
                   child: Container(
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: Colors.blueGrey,
+                      color: Colors.black45,
                     ),
                     child: IconButton(
                       icon: Icon(Icons.search, color: Colors.white),
                       onPressed: () {
-                        // Clear the search query
-                        // You can update the displayed list accordingly
+                        //
                       },
                     ),
                   ),
@@ -211,31 +224,46 @@ class _MainPageState extends State<MainPage> {
           ),
 
           Expanded(
+            //Permite obtener y mostrar la lista filtrada de pacientes
             child: filteredPatients.isEmpty
                 ? Center(
               child: searchQuery.isNotEmpty
                   ? Text("There are no patients with that name")
                   : emptyListMessage,
             ): ListView.builder(
-              itemCount: filteredPatients.length, // Use the filteredPatients list
+              itemCount: filteredPatients.length,
               itemBuilder: (context, index) {
-                final patient = filteredPatients[index]; // Get the patient from the filtered list
+                final patient = filteredPatients[index];
                 return ListTile(
-                  title: Text(patient.name),
+                  title: Text(patient.name,
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      fontFamily:'Nunito',
+                      color: Colors.blue[600],
+                      letterSpacing: 0.5,
+                    ),
+                  ),
                   subtitle: Text(
                     '${patient.dateOfBirth.toString().split(' ')[0]}, ${patient.gender == Gender.male ? 'Male' : 'Female'}',
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      fontFamily:'Nunito',
+                      letterSpacing: 2,
+                    ),
                   ),
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       IconButton(
-                        icon: Icon(Icons.edit),
+                        icon: Icon(Icons.edit, color: Colors.lightBlueAccent),
                         onPressed: () {
                           _showEditPatientDialog(context, patientList.indexOf(patient));
                         },
                       ),
                       IconButton(
-                        icon: Icon(Icons.delete),
+                        icon: Icon(Icons.delete, color: Colors.redAccent),
                         onPressed: () {
                           _deletePatient(patientList.indexOf(patient));
                         },
@@ -250,15 +278,18 @@ class _MainPageState extends State<MainPage> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
+        //Al clickar, permite añadir pacientes
         onPressed: () {
           _showAddPatientDialog(context);
         },
+        backgroundColor: Colors.black45,
         child: Icon(Icons.add),
       ),
     );
   }
 
   void _showAddPatientDialog(BuildContext context) {
+    //Método que permite al usuario crear nuevos pacientes
     showDialog(
       context: context,
       builder: (context) {
@@ -340,6 +371,7 @@ class _MainPageState extends State<MainPage> {
   }
 
   void _showEditPatientDialog(BuildContext context, int index) {
+    //Método que permite ediat los pacientes de la lista
     selectedPatientIndex = index;
     final patient = patientList[index];
     nameController.text = patient.name;
@@ -429,6 +461,7 @@ class _MainPageState extends State<MainPage> {
   }
 
   void _selectDate(BuildContext context) async {
+    //Permite al usuario seleccionar una fecha
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
@@ -443,6 +476,7 @@ class _MainPageState extends State<MainPage> {
   }
 
   void _deletePatient(int index) {
+    //Método que permite eliminar pacientes de la lista
     setState(() {
       patientList.removeAt(index);
     });
