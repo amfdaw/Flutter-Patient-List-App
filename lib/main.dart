@@ -53,7 +53,7 @@ class StartPage extends StatelessWidget {
                 style: TextStyle(
                   fontFamily: 'Nunito',
                   fontSize: 40,
-                  color: Colors.lightBlueAccent[100],
+                  color: Colors.lightBlueAccent[400],
                   backgroundColor: Colors.white,
                   fontWeight: FontWeight.bold,
 
